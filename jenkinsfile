@@ -2,15 +2,14 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'santhoshadmin/java-task' // Docker image name for the Java application
-        SONAR_TOKEN = credentials('sonar-tok') // SonarQube token
+        IMAGE_NAME = 'taskapp/java-task' // Docker image name for the Java application
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                // Checkout the code from the main branch
-                git branch: 'main', url: 'https://github.com/ssanthosh2k3/task-manager.git'
+                // Checkout the code from the master branch
+                git branch: 'master', url: 'https://github.com/GNandakumar2000/proj-1.git'
             }
         }
 
@@ -35,31 +34,6 @@ pipeline {
             }
         }
 
-        stage('Trivy Image Scan') {
-            steps {
-                script {
-                    // Scan the Docker image for vulnerabilities using Trivy
-                    sh """
-                    echo 'Scanning Docker image for vulnerabilities...'
-                    docker run --rm \
-                    -v /var/run/docker.sock:/var/run/docker.sock \
-                    -v \$(pwd):/workspace \
-                    aquasec/trivy \
-                    image --severity HIGH,CRITICAL --format table --ignore-unfixed ${IMAGE_NAME}:${env.BUILD_ID} > trivy_report.txt
-                    """
-
-                    // Check if the report file exists and is not empty
-                    def reportExists = sh(script: 'test -s trivy_report.txt', returnStatus: true)
-                    echo 'Displaying summary of Trivy scan results:'
-                    if (reportExists == 0) {
-                        sh 'cat trivy_report.txt'
-                    } else {
-                        echo 'No critical or high vulnerabilities found.'
-                    }
-                }
-            }
-        }
-
         stage('Push Docker Image') {
             steps {
                 script {
@@ -68,7 +42,7 @@ pipeline {
                         sh """
                         echo 'Logging into Docker Hub...'
                         echo '${DOCKER_HUB_TOKEN}' | docker login -u nandakumar007 --password-stdin
-                        
+
                         echo 'Tagging and pushing the Docker image...'
                         docker tag ${IMAGE_NAME}:${env.BUILD_ID} ${IMAGE_NAME}:latest
                         docker push ${IMAGE_NAME}:${env.BUILD_ID}
