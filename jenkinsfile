@@ -38,7 +38,7 @@ pipeline {
             steps {
                 script {
                     // Use stored Docker Hub credentials to log in and push the image
-                    withCredentials([string(credentialsId: 'nan-tok', variable: 'DOCKER_HUB_TOKEN')]) {
+                    withCredentials([string(credentialsId: 'k8-dh', variable: 'DOCKER_HUB_TOKEN')]) {
                         sh """
                         echo 'Logging into Docker Hub...'
                         echo '${DOCKER_HUB_TOKEN}' | docker login -u nandakumar007 --password-stdin
