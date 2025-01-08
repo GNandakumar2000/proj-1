@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-task
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: java-task
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: java-task
+    spec:
+      containers:
+      - name: java-task
+        image: santhoshadmin/java-task:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+      restartPolicy: Always
