@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'taskapp/java-task' // Docker image name for the Java application
+        IMAGE_NAME = 'nandakumar007/taskapp' // Update to match your Docker Hub repo
     }
 
     stages {
