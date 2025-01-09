@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: java-task
-        image: santhoshadmin/java-task:latest
+        image: nandakumar007/taskapp:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
